@@ -1,0 +1,12 @@
+# Core dependencies for WS2812B LED control on Raspberry Pi 5
+adafruit-circuitpython-neopixel>=6.3.11
+adafruit-circuitpython-neopixel-spi>=1.0.3
+adafruit-blinka>=8.40.0
+rpi-ws281x>=5.0.0
+
+# Board and GPIO support
+adafruit-circuitpython-busdevice>=5.2.9
+Adafruit-PlatformDetect>=3.64.0
+
+# Additional utilities
+pyftdi>=0.55.4
