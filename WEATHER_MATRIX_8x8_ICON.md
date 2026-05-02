@@ -98,9 +98,17 @@ display.display_icon('clouds', clear_rest=False)
 
 ## Matrix Coordinate System
 
-The matrix uses a serpentine (zigzag) wiring pattern:
-- **Even rows (0, 2, 4, 6)**: Left to right
-- **Odd rows (1, 3, 5, 7)**: Right to left
+The matrix uses a **column-major zigzag** wiring pattern (typical for pre-made panels):
+- **Even columns (0, 2, 4, 6...)**: Data flows DOWN (top to bottom)
+- **Odd columns (1, 3, 5, 7...)**: Data flows UP (bottom to top)
+
+Example pixel mapping:
+```
+Column 0: pixels 0-7 (top to bottom)
+Column 1: pixels 8-15 (bottom to top)
+Column 2: pixels 16-23 (top to bottom)
+...and so on
+```
 
 Icon area: Columns 0-7, Rows 0-7
 Content area: Columns 8-31, Rows 0-7

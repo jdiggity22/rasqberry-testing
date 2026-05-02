@@ -262,7 +262,9 @@ class WeatherMatrix:
     def xy_to_index(self, x, y):
         """
         Convert x,y coordinates to LED strip index
-        Assumes serpentine (zigzag) wiring pattern
+        Assumes column-major zigzag wiring pattern (typical for pre-made matrix panels)
+        - Even columns (0, 2, 4...): Data flows DOWN (top to bottom)
+        - Odd columns (1, 3, 5...): Data flows UP (bottom to top)
         
         Args:
             x: X coordinate (0 to width-1)
@@ -274,11 +276,13 @@ class WeatherMatrix:
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return None
         
-        # Serpentine pattern: even rows go left-to-right, odd rows go right-to-left
-        if y % 2 == 0:
-            index = y * self.width + x
+        # Column-major zigzag pattern
+        if x % 2 == 0:
+            # Even columns: top to bottom
+            index = x * self.height + y
         else:
-            index = y * self.width + (self.width - 1 - x)
+            # Odd columns: bottom to top
+            index = x * self.height + (self.height - 1 - y)
         
         return index
     
