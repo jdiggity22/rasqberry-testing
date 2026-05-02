@@ -185,9 +185,9 @@ Press `Ctrl+C` to stop the scrolling. The program will automatically clear the d
 
 ### Font Format
 
-Each character is defined as a 5×7 pixel array:
+Each character is defined as a 5×8 pixel array:
 - Width: 5 pixels
-- Height: 7 pixels
+- Height: 8 pixels (fills the full matrix height)
 - Spacing: 1 pixel between characters
 
 ### Scrolling Algorithm

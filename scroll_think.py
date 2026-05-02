@@ -19,11 +19,12 @@ DEFAULT_BRIGHTNESS = 0.3
 BLUE_COLOR = (0, 0, 255)
 BLACK_COLOR = (0, 0, 0)
 
-# 5x7 Font for letters (each letter is 5 pixels wide, 7 pixels tall)
+# 5x8 Font for letters (each letter is 5 pixels wide, 8 pixels tall)
 # 1 = pixel on, 0 = pixel off
 FONT = {
     'T': [
         [1, 1, 1, 1, 1],
+        [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
@@ -39,9 +40,11 @@ FONT = {
         [1, 0, 0, 0, 1],
         [1, 0, 0, 0, 1],
         [1, 0, 0, 0, 1],
+        [1, 0, 0, 0, 1],
     ],
     'I': [
         [0, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
         [0, 0, 1, 0, 0],
@@ -52,10 +55,11 @@ FONT = {
     'N': [
         [1, 0, 0, 0, 1],
         [1, 1, 0, 0, 1],
+        [1, 1, 0, 0, 1],
+        [1, 0, 1, 0, 1],
         [1, 0, 1, 0, 1],
         [1, 0, 0, 1, 1],
-        [1, 0, 0, 0, 1],
-        [1, 0, 0, 0, 1],
+        [1, 0, 0, 1, 1],
         [1, 0, 0, 0, 1],
     ],
     'K': [
@@ -63,11 +67,13 @@ FONT = {
         [1, 0, 0, 1, 0],
         [1, 0, 1, 0, 0],
         [1, 1, 0, 0, 0],
+        [1, 1, 0, 0, 0],
         [1, 0, 1, 0, 0],
         [1, 0, 0, 1, 0],
         [1, 0, 0, 0, 1],
     ],
     ' ': [
+        [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
@@ -182,11 +188,8 @@ class LEDMatrix:
                     # Only draw if within visible area
                     if 0 <= x_pos < self.width:
                         for y_pos, pixel in enumerate(column):
-                            if pixel == 1:
-                                # Center vertically (7 pixel font in 8 pixel height)
-                                y_centered = y_pos
-                                if y_centered < self.height:
-                                    self.set_pixel(x_pos, y_centered, color)
+                            if pixel == 1 and y_pos < self.height:
+                                self.set_pixel(x_pos, y_pos, color)
                 
                 # Move to next letter position (5 pixels wide + 1 pixel spacing)
                 current_x += 6
