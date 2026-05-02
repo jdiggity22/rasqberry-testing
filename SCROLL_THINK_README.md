@@ -20,15 +20,17 @@ This program scrolls the word "THINK" in BLUE across an 8x32 WS2812B LED matrix 
 
 ## 🔌 LED Matrix Wiring
 
-The program assumes a **serpentine (zigzag) wiring pattern**:
+The program assumes a **column-major zigzag wiring pattern** (typical for pre-made matrix panels):
 
 ```
-Row 0: LED 0 → 1 → 2 → ... → 31 (left to right)
-Row 1: LED 63 ← 62 ← 61 ← ... ← 32 (right to left)
-Row 2: LED 64 → 65 → 66 → ... → 95 (left to right)
-Row 3: LED 127 ← 126 ← 125 ← ... ← 96 (right to left)
+Column 0: LED 0 → 1 → 2 → ... → 7 (top to bottom)
+Column 1: LED 15 ← 14 ← 13 ← ... ← 8 (bottom to top)
+Column 2: LED 16 → 17 → 18 → ... → 23 (top to bottom)
+Column 3: LED 31 ← 30 ← 29 ← ... ← 24 (bottom to top)
 ...and so on
 ```
+
+**Note:** Even columns flow DOWN, odd columns flow UP.
 
 Connect:
 - LED Matrix Data IN → 330Ω resistor → GPIO 18 (Pin 12)
