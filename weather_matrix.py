@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Weather Icon Display for Minneapolis, Minnesota - 8x32 LED Matrix
-Displays current weather conditions as icons on WS2812B LED matrix
+Displays current weather conditions as 8x8 icons on the LEFT SIDE of the matrix
+The remaining 24 columns (8-31) are available for other content
 Uses OpenWeatherMap API for weather data
 """
 
@@ -17,38 +18,39 @@ from datetime import datetime
 # Configuration for 8x32 LED Matrix
 MATRIX_WIDTH = 32
 MATRIX_HEIGHT = 8
+ICON_SIZE = 8  # Icons are 8x8 pixels
 TOTAL_LEDS = MATRIX_WIDTH * MATRIX_HEIGHT  # 256 LEDs
 DEFAULT_LED_PIN = board.D18
 DEFAULT_BRIGHTNESS = 0.3
 MINNEAPOLIS_LAT = 44.9778
 MINNEAPOLIS_LON = -93.2650
 
-# Weather icon patterns for 8x32 matrix
-# Each icon is defined as a function that returns colors for the entire matrix
+# Weather icon patterns for 8x8 matrix (displayed on left side)
+# Each icon is defined as a function that returns colors for an 8x8 grid
 def create_clear_day_icon():
-    """Bright sun with rays"""
+    """Bright sun with rays - 8x8"""
     icon = []
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
+        for x in range(ICON_SIZE):
             # Center sun
-            dx = x - MATRIX_WIDTH // 2
-            dy = y - MATRIX_HEIGHT // 2
+            dx = x - ICON_SIZE // 2
+            dy = y - ICON_SIZE // 2
             dist = (dx * dx + dy * dy) ** 0.5
             
-            if dist < 3:
+            if dist < 1.5:
                 # Sun center - bright yellow
                 row.append((255, 200, 0))
-            elif dist < 4:
+            elif dist < 2.5:
                 # Sun edge - golden
                 row.append((255, 150, 0))
-            elif (abs(dx) < 1 and abs(dy) > 3) or (abs(dy) < 1 and abs(dx) > 3):
+            elif (abs(dx) < 0.5 and abs(dy) > 2) or (abs(dy) < 0.5 and abs(dx) > 2):
                 # Sun rays (vertical and horizontal)
                 row.append((255, 180, 0))
-            elif abs(dx - dy) < 1 and abs(dx) > 3:
+            elif abs(dx - dy) < 0.5 and abs(dx) > 2:
                 # Diagonal rays
                 row.append((255, 180, 0))
-            elif abs(dx + dy) < 1 and abs(dx) > 3:
+            elif abs(dx + dy) < 0.5 and abs(dx) > 2:
                 # Other diagonal rays
                 row.append((255, 180, 0))
             else:
@@ -58,25 +60,25 @@ def create_clear_day_icon():
     return icon
 
 def create_clear_night_icon():
-    """Crescent moon with stars"""
+    """Crescent moon with stars - 8x8"""
     icon = []
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
-            # Moon position (left side)
-            dx = x - 12
+        for x in range(ICON_SIZE):
+            # Moon position (center-left)
+            dx = x - 3
             dy = y - 4
             dist = (dx * dx + dy * dy) ** 0.5
             
             # Shadow position (creates crescent)
-            sdx = x - 14
+            sdx = x - 4
             sdy = y - 4
             sdist = (sdx * sdx + sdy * sdy) ** 0.5
             
-            if dist < 2.5 and sdist > 2:
+            if dist < 1.8 and sdist > 1.2:
                 # Moon crescent - pale yellow
                 row.append((200, 200, 150))
-            elif (x == 20 and y == 2) or (x == 25 and y == 5) or (x == 22 and y == 6):
+            elif (x == 6 and y == 1) or (x == 7 and y == 3) or (x == 6 and y == 6):
                 # Stars - white
                 row.append((200, 200, 200))
             else:
@@ -86,15 +88,15 @@ def create_clear_night_icon():
     return icon
 
 def create_clouds_icon():
-    """Fluffy clouds"""
+    """Fluffy clouds - 8x8"""
     icon = []
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
-            # Multiple cloud puffs
-            cloud1 = ((x - 10) ** 2 + (y - 3) ** 2) < 12
-            cloud2 = ((x - 15) ** 2 + (y - 2) ** 2) < 10
-            cloud3 = ((x - 20) ** 2 + (y - 3) ** 2) < 12
+        for x in range(ICON_SIZE):
+            # Cloud puffs
+            cloud1 = ((x - 2) ** 2 + (y - 3) ** 2) < 4
+            cloud2 = ((x - 4) ** 2 + (y - 2) ** 2) < 3
+            cloud3 = ((x - 6) ** 2 + (y - 3) ** 2) < 4
             
             if cloud1 or cloud2 or cloud3:
                 # Cloud - light gray
@@ -107,18 +109,18 @@ def create_clouds_icon():
     return icon
 
 def create_rain_icon():
-    """Rain drops falling"""
+    """Rain drops falling - 8x8"""
     icon = []
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
+        for x in range(ICON_SIZE):
             # Dark clouds at top
             if y < 2:
                 row.append((80, 80, 100))
             # Rain drops - diagonal pattern
-            elif (x + y * 2) % 4 == 0:
+            elif (x + y * 2) % 3 == 0:
                 row.append((0, 100, 255))
-            elif (x + y * 2) % 4 == 1:
+            elif (x + y * 2) % 3 == 1:
                 row.append((0, 120, 255))
             else:
                 # Background - dark blue
@@ -127,18 +129,17 @@ def create_rain_icon():
     return icon
 
 def create_thunderstorm_icon():
-    """Lightning bolt with dark clouds"""
+    """Lightning bolt with dark clouds - 8x8"""
     icon = []
     lightning_pattern = [
-        (16, 1), (15, 2), (16, 2), (15, 3), (14, 4), (15, 4),
-        (16, 4), (17, 5), (16, 6), (17, 6)
+        (4, 2), (3, 3), (4, 3), (3, 4), (4, 4), (5, 5), (4, 6), (5, 6)
     ]
     
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
+        for x in range(ICON_SIZE):
             # Dark storm clouds
-            if y < 3:
+            if y < 2:
                 row.append((40, 40, 50))
             # Lightning bolt
             elif (x, y) in lightning_pattern:
@@ -150,24 +151,24 @@ def create_thunderstorm_icon():
     return icon
 
 def create_snow_icon():
-    """Snowflakes falling"""
+    """Snowflakes falling - 8x8"""
     icon = []
     snowflakes = [
-        (8, 2), (8, 5), (16, 1), (16, 4), (16, 6),
-        (24, 2), (24, 5), (12, 3), (20, 3), (28, 4)
+        (2, 2), (2, 5), (4, 1), (4, 4), (4, 6),
+        (6, 2), (6, 5)
     ]
     
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
+        for x in range(ICON_SIZE):
             # Light gray clouds at top
-            if y < 2:
+            if y < 1:
                 row.append((150, 150, 160))
             # Snowflakes
             elif (x, y) in snowflakes:
                 row.append((255, 255, 255))
             # Snowflake arms
-            elif any((abs(x - sx) == 1 and y == sy) or (abs(y - sy) == 1 and x == sx) 
+            elif any((abs(x - sx) == 1 and y == sy) or (abs(y - sy) == 1 and x == sx)
                     for sx, sy in snowflakes):
                 row.append((200, 200, 220))
             else:
@@ -177,11 +178,11 @@ def create_snow_icon():
     return icon
 
 def create_mist_icon():
-    """Foggy/misty atmosphere"""
+    """Foggy/misty atmosphere - 8x8"""
     icon = []
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
+        for x in range(ICON_SIZE):
             # Horizontal fog bands
             if y % 2 == 0:
                 brightness = 160 + (x % 4) * 10
@@ -193,13 +194,13 @@ def create_mist_icon():
     return icon
 
 def create_error_icon():
-    """Error indicator - red X"""
+    """Error indicator - red X - 8x8"""
     icon = []
-    for y in range(MATRIX_HEIGHT):
+    for y in range(ICON_SIZE):
         row = []
-        for x in range(MATRIX_WIDTH):
+        for x in range(ICON_SIZE):
             # Draw X pattern
-            if abs(x - y * 4) < 2 or abs(x - (MATRIX_WIDTH - y * 4)) < 2:
+            if x == y or x == (ICON_SIZE - 1 - y):
                 row.append((255, 0, 0))
             else:
                 row.append((0, 0, 0))
@@ -220,7 +221,11 @@ WEATHER_ICONS = {
 
 
 class WeatherMatrix:
-    """Class to handle weather display on 8x32 LED matrix"""
+    """
+    Class to handle weather display on 8x32 LED matrix
+    Weather icons are displayed in an 8x8 grid on the LEFT side (columns 0-7)
+    The remaining columns (8-31) are available for other content
+    """
     
     def __init__(self, api_key: str, width=MATRIX_WIDTH, height=MATRIX_HEIGHT,
                  pin=DEFAULT_LED_PIN, brightness=DEFAULT_BRIGHTNESS):
@@ -229,8 +234,8 @@ class WeatherMatrix:
         
         Args:
             api_key: OpenWeatherMap API key
-            width: Matrix width in pixels
-            height: Matrix height in pixels
+            width: Matrix width in pixels (default: 32)
+            height: Matrix height in pixels (default: 8)
             pin: GPIO pin connected to the LED data line
             brightness: LED brightness (0.0 to 1.0)
         """
@@ -238,6 +243,7 @@ class WeatherMatrix:
         self.width = width
         self.height = height
         self.num_pixels = width * height
+        self.icon_size = ICON_SIZE
         
         try:
             self.pixels = neopixel.NeoPixel(
@@ -290,6 +296,24 @@ class WeatherMatrix:
     def show(self):
         """Update the display"""
         self.pixels.show()
+    
+    def get_icon_bounds(self):
+        """
+        Get the bounds of the icon area
+        
+        Returns:
+            Tuple of (x_start, x_end, y_start, y_end) for the icon area
+        """
+        return (0, ICON_SIZE, 0, self.height)
+    
+    def get_content_bounds(self):
+        """
+        Get the bounds of the content area (right side, available for other content)
+        
+        Returns:
+            Tuple of (x_start, x_end, y_start, y_end) for the content area
+        """
+        return (ICON_SIZE, self.width, 0, self.height)
     
     def get_weather_data(self, lat: float = MINNEAPOLIS_LAT, 
                         lon: float = MINNEAPOLIS_LON) -> Dict:
@@ -353,25 +377,44 @@ class WeatherMatrix:
         else:
             return 'clouds'
     
-    def display_icon(self, icon_key: str):
-        """Display a weather icon on the matrix"""
+    def display_icon(self, icon_key: str, clear_rest: bool = True):
+        """
+        Display a weather icon on the left side of the matrix (8x8)
+        
+        Args:
+            icon_key: Key for the weather icon to display
+            clear_rest: If True, clear the rest of the matrix (columns 8-31)
+        """
         if icon_key not in WEATHER_ICONS:
             print(f"⚠ Unknown icon: {icon_key}, using error pattern")
             icon_key = 'error'
         
-        # Generate icon pattern
+        # Generate 8x8 icon pattern
         icon_pattern = WEATHER_ICONS[icon_key]()
         
-        # Display on matrix
-        for y in range(self.height):
-            for x in range(self.width):
+        # Display icon on left side (columns 0-7)
+        for y in range(min(self.height, ICON_SIZE)):
+            for x in range(ICON_SIZE):
                 color = icon_pattern[y][x]
                 self.set_pixel(x, y, color)
         
+        # Clear the rest of the matrix if requested
+        if clear_rest:
+            for y in range(self.height):
+                for x in range(ICON_SIZE, self.width):
+                    self.set_pixel(x, y, (0, 0, 0))
+        
         self.show()
     
-    def animate_icon(self, icon_key: str, duration: float = 5.0):
-        """Display weather icon with fade-in animation"""
+    def animate_icon(self, icon_key: str, duration: float = 5.0, clear_rest: bool = True):
+        """
+        Display weather icon with fade-in animation on left side (8x8)
+        
+        Args:
+            icon_key: Key for the weather icon to display
+            duration: Duration of the fade-in animation
+            clear_rest: If True, clear the rest of the matrix (columns 8-31)
+        """
         if icon_key not in WEATHER_ICONS:
             icon_key = 'error'
         
@@ -379,11 +422,17 @@ class WeatherMatrix:
         steps = 20
         step_duration = duration / steps
         
-        # Fade in animation
+        # Clear the rest of the matrix if requested
+        if clear_rest:
+            for y in range(self.height):
+                for x in range(ICON_SIZE, self.width):
+                    self.set_pixel(x, y, (0, 0, 0))
+        
+        # Fade in animation for 8x8 icon on left side
         for step in range(steps + 1):
             brightness = step / steps
-            for y in range(self.height):
-                for x in range(self.width):
+            for y in range(min(self.height, ICON_SIZE)):
+                for x in range(ICON_SIZE):
                     r, g, b = icon_pattern[y][x]
                     self.set_pixel(x, y, (
                         int(r * brightness),
