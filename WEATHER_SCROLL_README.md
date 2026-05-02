@@ -1,22 +1,26 @@
 # Weather Scrolling Display
 
-Scrolls weather icon and temperature data across an 8x32 WS2812B LED matrix display for Minneapolis, Minnesota.
+Scrolls comprehensive weather data with icon across an 8x32 WS2812B LED matrix display for Minneapolis, Minnesota.
 
 ## 🎯 Features
 
 - **8x8 Weather Icon** - Full-color weather condition icon
-- **8-Pixel High Temperature** - Large, readable temperature display in orange
-- **Smooth Scrolling** - Icon and text scroll together from right to left
+- **Comprehensive Weather Data** - Temperature, feels like, humidity, and wind speed
+- **8-Pixel High Text** - Large, readable display in blue
+- **Smooth Scrolling** - Icon and all data scroll together from right to left
 - **Real-Time Weather** - Fetches current conditions from OpenWeatherMap API
 - **Configurable** - Adjustable scroll speed, brightness, and loop count
 
 ## 📋 Display Format
 
-The display shows:
+The display shows all relevant weather information:
 1. **Weather Icon** (8x8 pixels) - Sun, moon, clouds, rain, snow, etc.
-2. **Temperature** (8-pixel high text) - Current temperature in Fahrenheit
+2. **Temperature** - Current temperature in Fahrenheit
+3. **Feels Like** - Apparent temperature
+4. **Humidity** - Relative humidity percentage
+5. **Wind Speed** - Wind speed in MPH
 
-Example: `[☀️ ICON] 72F` scrolls across the display
+Example: `[☀️ ICON] 72F FEELS 70F HUMID 45% WIND 8MPH` scrolls across the display
 
 ## 🌤️ Weather Icons
 
@@ -120,11 +124,16 @@ python weather_scroll.py -k YOUR_API_KEY -l 5 -b 0.5 -s 0.08
 - **Position**: Scrolls from right to left
 - **Colors**: Full RGB colors matching weather conditions
 
-### Temperature Text
+### Weather Data Text
 - **Font Size**: 8 pixels high × 6 pixels wide per character
-- **Color**: Orange (255, 100, 0)
-- **Format**: `##F` (e.g., "72F", "-5F")
+- **Color**: Blue (0, 100, 255)
+- **Format**: `##F FEELS ##F HUMID ##% WIND ##MPH`
 - **Spacing**: 1 pixel between characters
+- **Data Included**:
+  - Current temperature
+  - Feels like temperature
+  - Humidity percentage
+  - Wind speed in MPH
 
 ### Scrolling Behavior
 - Starts from right edge of display
@@ -143,12 +152,13 @@ python weather_scroll.py -k YOUR_API_KEY -l 5 -b 0.5 -s 0.08
 ### Font Support
 The 8x6 font includes:
 - **Numbers**: 0-9
-- **Letters**: F, C, O (for temperature units)
-- **Symbols**: Space, dash, period
+- **Letters**: C, D, E, F, H, I, M, N, O, P, T, W
+- **Symbols**: Space, dash, period, percent (%)
+- **Supports**: Temperature, humidity, wind speed, and descriptive text
 
 ### Color Scheme
-- **Weather Icons**: Condition-specific colors
-- **Temperature**: Orange (255, 100, 0)
+- **Weather Icons**: Condition-specific colors (full RGB)
+- **Weather Data Text**: Blue (0, 100, 255)
 - **Background**: Black (0, 0, 0)
 
 ## 📊 Example Output

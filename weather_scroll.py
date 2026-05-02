@@ -190,6 +190,106 @@ FONT_8x6 = {
         [1, 1, 0, 0, 1, 1],
         [0, 1, 1, 1, 1, 0],
     ],
+    'T': [
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+    ],
+    'E': [
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 0],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1],
+    ],
+    'M': [
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+    ],
+    'P': [
+        [1, 1, 1, 1, 1, 0],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 1, 1, 0],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+    ],
+    'H': [
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+    ],
+    'W': [
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+    ],
+    'I': [
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+    ],
+    'N': [
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 0, 1, 1],
+        [1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1],
+        [1, 1, 0, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+    ],
+    'D': [
+        [1, 1, 1, 1, 0, 0],
+        [1, 1, 0, 1, 1, 0],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 1, 1, 0],
+        [1, 1, 1, 1, 0, 0],
+    ],
+    '%': [
+        [1, 1, 0, 0, 0, 1],
+        [1, 1, 0, 0, 1, 1],
+        [0, 0, 0, 1, 1, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 1, 1, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1],
+        [1, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 0],
+    ],
 }
 
 # Import weather icon functions from weather_matrix
@@ -349,7 +449,7 @@ class WeatherScrollDisplay:
             return 'clouds'
     
     def scroll_weather(self, scroll_speed=DEFAULT_SCROLL_SPEED, loops=None):
-        """Scroll weather icon and data across the display"""
+        """Scroll weather icon and comprehensive data across the display"""
         weather_data = self.get_weather_data()
         
         if not weather_data:
@@ -360,11 +460,22 @@ class WeatherScrollDisplay:
         icon_key = self.map_weather_to_icon(weather_data)
         icon_pattern = WEATHER_ICONS[icon_key]()
         
-        # Format temperature text
-        temp_text = f" {int(weather_data['temp'])}F "
+        # Format comprehensive weather text
+        temp = int(weather_data['temp'])
+        feels = int(weather_data['feels_like'])
+        humidity = int(weather_data['humidity'])
+        wind = int(weather_data['wind_speed'])
+        
+        # Build weather string with all data
+        weather_text = (
+            f" {temp}F "
+            f" FEELS {feels}F "
+            f" HUMID {humidity}% "
+            f" WIND {wind}MPH "
+        )
         
         # Calculate total width: icon (8) + text
-        text_width = len(temp_text) * 7
+        text_width = len(weather_text) * 7
         total_width = ICON_SIZE + text_width
         
         loop_count = 0
@@ -377,9 +488,9 @@ class WeatherScrollDisplay:
                     # Render icon
                     self.render_icon_at_position(icon_pattern, x_offset)
                     
-                    # Render temperature text after icon
+                    # Render weather text after icon
                     text_x = x_offset + ICON_SIZE
-                    self.render_text_at_position(temp_text, text_x, TEMP_COLOR)
+                    self.render_text_at_position(weather_text, text_x, BLUE_COLOR)
                     
                     self.show()
                     time.sleep(scroll_speed)
