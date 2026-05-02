@@ -1,6 +1,11 @@
 # Weather Display for Minneapolis, Minnesota
 
-Display current weather conditions as colorful icons on your WS2812B LED strip! This program fetches real-time weather data from OpenWeatherMap and shows beautiful weather icons on your LEDs.
+Display current weather conditions as colorful icons on your WS2812B LEDs! This project includes two programs:
+
+- **weather_display.py** - For 1D LED strips (8 LEDs in a row)
+- **weather_matrix.py** - For 2D LED matrices (8x32 matrix, 256 LEDs) ⭐ **RECOMMENDED**
+
+Both programs fetch real-time weather data from OpenWeatherMap and show beautiful weather icons.
 
 ## 🌤️ Features
 
@@ -13,7 +18,24 @@ Display current weather conditions as colorful icons on your WS2812B LED strip! 
 
 ## 🎨 Weather Icons
 
-The program displays different LED patterns for various weather conditions:
+### For 8x32 Matrix (weather_matrix.py) - Full Screen Icons
+
+The matrix version displays beautiful full-screen weather icons:
+
+| Weather Condition | Visual Description |
+|------------------|-------------------|
+| **Clear (Day)** | Bright yellow sun with rays spreading across the display |
+| **Clear (Night)** | Crescent moon with twinkling stars on dark blue sky |
+| **Clouds** | Fluffy white/gray clouds floating across light blue sky |
+| **Rain** | Dark clouds at top with blue raindrops falling diagonally |
+| **Thunderstorm** | Dark storm clouds with bright yellow lightning bolt |
+| **Snow** | Gray clouds with white snowflakes falling gently |
+| **Mist/Fog** | Horizontal bands of gray creating foggy atmosphere |
+| **Error** | Red X pattern indicating connection error |
+
+### For LED Strip (weather_display.py) - Color Patterns
+
+The strip version displays color gradients for 8 LEDs:
 
 | Weather Condition | LED Color Pattern | Description |
 |------------------|-------------------|-------------|
@@ -49,6 +71,30 @@ The program displays different LED patterns for various weather conditions:
    - Current weather data
    - 3-hour forecast data
 
+## 🚀 Quick Start (For 8x32 Matrix)
+
+### Basic Usage
+
+Display weather once for 10 seconds:
+
+```bash
+sudo python3 weather_matrix.py -k YOUR_API_KEY
+```
+
+### Continuous Display Mode
+
+Update weather every 10 minutes:
+
+```bash
+sudo python3 weather_matrix.py -k YOUR_API_KEY -c
+```
+
+Update every 5 minutes:
+
+```bash
+sudo python3 weather_matrix.py -k YOUR_API_KEY -c -i 300
+```
+
 ## 🚀 Installation
 
 ### 1. Install Dependencies
@@ -72,38 +118,31 @@ Make sure your LED strip is properly connected:
 
 ## 🎮 Usage
 
-### Basic Usage (Single Display)
+### For 8x32 Matrix (weather_matrix.py) ⭐ RECOMMENDED
 
-Display weather once for 10 seconds:
-
+**Basic Usage:**
 ```bash
+# Display once for 10 seconds
+sudo python3 weather_matrix.py -k YOUR_API_KEY
+
+# Continuous display, update every 10 minutes
+sudo python3 weather_matrix.py -k YOUR_API_KEY -c
+
+# Update every 5 minutes with 50% brightness
+sudo python3 weather_matrix.py -k YOUR_API_KEY -c -i 300 -b 0.5
+```
+
+### For LED Strip (weather_display.py)
+
+**Basic Usage:**
+```bash
+# Display once for 10 seconds (8 LEDs)
 sudo python3 weather_display.py -k YOUR_API_KEY
-```
 
-### Continuous Display Mode
+# Continuous display with 16 LEDs
+sudo python3 weather_display.py -k YOUR_API_KEY -c -n 16
 
-Update weather every 10 minutes (600 seconds):
-
-```bash
-sudo python3 weather_display.py -k YOUR_API_KEY -c
-```
-
-Update every 5 minutes:
-
-```bash
-sudo python3 weather_display.py -k YOUR_API_KEY -c -i 300
-```
-
-### Custom Configuration
-
-```bash
-# 16 LEDs, 30% brightness, update every 15 minutes
-sudo python3 weather_display.py -k YOUR_API_KEY -c -n 16 -b 0.3 -i 900
-
-# Single display for 30 seconds without animation
-sudo python3 weather_display.py -k YOUR_API_KEY -d 30 --no-animate
-
-# Lower brightness for nighttime use
+# Custom brightness for nighttime
 sudo python3 weather_display.py -k YOUR_API_KEY -c -b 0.2
 ```
 
