@@ -1,14 +1,20 @@
 # Raspberry Pi 5 WS2812B LED Testing Project
 
-A comprehensive Python project for testing and controlling WS2812B (NeoPixel) LED strips on Raspberry Pi 5.
+A comprehensive Python project for testing and controlling WS2812B (NeoPixel) LED strips and matrices on Raspberry Pi 5.
 
 ## 🎯 Features
 
 - **Multiple Test Patterns**: Individual LED testing, color cycling, rainbow effects, chase patterns, and brightness testing
+- **Scrolling Text Display**: NEW! Scroll text across 8x32 LED matrix (see `scroll_think.py`)
 - **Configurable Settings**: Easy-to-modify configuration file for LED count, GPIO pins, and brightness
 - **Command-Line Interface**: Run specific tests or all tests with customizable parameters
 - **Well-Documented Code**: Clear comments and type hints throughout
 - **Safe Defaults**: Conservative brightness and power settings to protect hardware
+
+## 📂 Programs Included
+
+1. **main.py** - LED strip testing program with various patterns
+2. **scroll_think.py** - Scrolling text display for 8x32 LED matrix (scrolls "THINK" in BLUE)
 
 ## 📋 Hardware Requirements
 
@@ -156,15 +162,37 @@ sudo python3 main.py -n 24 -b 0.5 --test colors
 python3 main.py --help
 ```
 
+## 🎬 Scrolling Text Display (NEW!)
+
+To scroll "THINK" in BLUE across an 8x32 LED matrix:
+
+```bash
+# Basic usage (scrolls continuously)
+sudo python3 scroll_think.py
+
+# Scroll 5 times then stop
+sudo python3 scroll_think.py -l 5
+
+# Adjust speed and brightness
+sudo python3 scroll_think.py -s 0.03 -b 0.4
+
+# Custom text
+sudo python3 scroll_think.py -t "HELLO"
+```
+
+**See [SCROLL_THINK_README.md](SCROLL_THINK_README.md) for complete documentation.**
+
 ## 📁 Project Structure
 
 ```
 rasqberry-testing/
-├── main.py           # Main test program with LED patterns
-├── config.py         # Configuration file for LED settings
-├── remoteexec.py     # Remote execution script (existing)
-├── requirements.txt  # Python dependencies
-└── README.md         # This file
+├── main.py                  # Main test program with LED patterns
+├── scroll_think.py          # Scrolling text display for 8x32 matrix
+├── config.py                # Configuration file for LED settings
+├── remoteexec.py            # Remote execution script
+├── requirements.txt         # Python dependencies
+├── README.md                # This file
+└── SCROLL_THINK_README.md   # Scrolling text documentation
 ```
 
 ## 🔧 Configuration Options
