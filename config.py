@@ -22,7 +22,7 @@ LED_PIN = board.D18
 
 # LED brightness (0.0 to 1.0)
 # Start with lower values to avoid excessive power draw
-BRIGHTNESS = 0.5
+BRIGHTNESS = 0.3
 
 # Pixel color order
 # Common values: GRB, RGB, GRBW, RGBW
