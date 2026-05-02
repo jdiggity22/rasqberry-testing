@@ -1,13 +1,14 @@
 # Scrolling Text Display - "THINK" in BLUE
 
-This program scrolls the word "THINK" in BLUE across an 8x32 WS2812B LED matrix display.
+This program scrolls text in BLUE across an 8x32 WS2812B LED matrix display using 8-pixel high letters.
 
 ## 🎯 Features
 
-- Scrolls "THINK" in blue color across the LED matrix
+- Scrolls "THINK" (or custom text) in blue color across the LED matrix
+- **8-pixel high letters** that fill the entire vertical height
 - Configurable scroll speed and brightness
-- Support for custom text (using available font characters)
-- Smooth scrolling animation
+- Support for custom text (T, H, I, N, K, and space)
+- Smooth scrolling animation from right to left
 - Can run continuously or for a specific number of loops
 
 ## 📋 Hardware Requirements
@@ -38,6 +39,83 @@ Connect:
 - LED Matrix 5V → External 5V Power Supply
 
 ## 🚀 Usage
+
+### Basic Usage (Continuous Scrolling)
+
+```bash
+python scroll_think.py
+```
+
+This will scroll "THINK" in blue continuously until you press Ctrl+C.
+
+### Scroll a Specific Number of Times
+
+```bash
+python scroll_think.py -l 3
+```
+
+Scrolls "THINK" 3 times then stops.
+
+### Adjust Scroll Speed
+
+```bash
+# Slower scrolling (0.1 seconds per step)
+python scroll_think.py -s 0.1
+
+# Faster scrolling (0.02 seconds per step)
+python scroll_think.py -s 0.02
+```
+
+### Custom Text
+
+```bash
+python scroll_think.py -t "THINK"
+python scroll_think.py -t "HI"
+python scroll_think.py -t "THINK THINK"
+```
+
+### Adjust Brightness
+
+```bash
+# Dimmer (30% brightness)
+python scroll_think.py -b 0.3
+
+# Brighter (80% brightness)
+python scroll_think.py -b 0.8
+```
+
+### Combined Options
+
+```bash
+# Scroll "THINK" 5 times at 50% brightness with slow speed
+python scroll_think.py -t "THINK" -l 5 -b 0.5 -s 0.08
+```
+
+## 📝 Command Line Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-t, --text` | Text to scroll | "THINK" |
+| `-s, --speed` | Scroll speed (seconds per step) | 0.05 |
+| `-l, --loops` | Number of times to loop | Infinite |
+| `-b, --brightness` | LED brightness (0.0-1.0) | 0.3 |
+| `--width` | Matrix width | 32 |
+| `--height` | Matrix height | 8 |
+
+## 🔤 Supported Characters
+
+The 8x6 font currently supports:
+- **T, H, I, N, K** (uppercase)
+- **Space character**
+
+Characters are 6 pixels wide and 8 pixels tall, with 1 pixel spacing between letters.
+
+## 🎨 Font Details
+
+- **Font Size**: 8 pixels high × 6 pixels wide per character
+- **Spacing**: 1 pixel between characters
+- **Color**: Blue (0, 0, 255)
+- **Style**: Bold, blocky letters that fill the full 8-pixel height
 
 ### Basic Usage
 

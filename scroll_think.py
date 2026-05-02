@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Static Text Display for 8x32 WS2812B LED Matrix
-Displays the word "THINK" in rainbow colors without scrolling
+Scrolling Text Display for 8x32 WS2812B LED Matrix
+Scrolls text in blue color with 8-pixel high letters
 """
 
 import time
@@ -16,61 +16,72 @@ MATRIX_HEIGHT = 8
 TOTAL_LEDS = MATRIX_WIDTH * MATRIX_HEIGHT  # 256 LEDs
 DEFAULT_LED_PIN = board.D18
 DEFAULT_BRIGHTNESS = 0.3
+DEFAULT_SCROLL_SPEED = 0.05  # Seconds between scroll steps
 BLACK_COLOR = (0, 0, 0)
-RAINBOW_COLORS = [
-    (255, 0, 0),
-    (255, 127, 0),
-    (255, 255, 0),
-    (0, 255, 0),
-    (0, 0, 255),
-    (75, 0, 130),
-    (148, 0, 211),
-]
+BLUE_COLOR = (0, 0, 255)
 
-# 5x5 Font for letters (each letter is 5 pixels wide, 5 pixels tall)
+# 8x6 Font for letters (each letter is 6 pixels wide, 8 pixels tall)
 # 1 = pixel on, 0 = pixel off
-FONT = {
+FONT_8x6 = {
     'T': [
-        [1, 1, 1, 1, 1],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
     ],
     'H': [
-        [1, 0, 0, 0, 1],
-        [1, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1],
-        [1, 0, 0, 0, 1],
-        [1, 0, 0, 0, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
     ],
     'I': [
-        [1, 1, 1, 1, 1],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1],
     ],
     'N': [
-        [1, 0, 0, 0, 1],
-        [1, 1, 0, 0, 1],
-        [1, 0, 1, 0, 1],
-        [1, 0, 0, 1, 1],
-        [1, 0, 0, 0, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 1, 0, 1, 1],
+        [1, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 1, 1],
+        [1, 1, 0, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 0, 1, 1],
     ],
     'K': [
-        [1, 0, 0, 0, 1],
-        [1, 0, 0, 1, 0],
-        [1, 1, 1, 0, 0],
-        [1, 0, 0, 1, 0],
-        [1, 0, 0, 0, 1],
+        [1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 1, 1, 0],
+        [1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0],
+        [1, 1, 1, 1, 0, 0],
+        [1, 1, 0, 1, 1, 0],
+        [1, 1, 0, 0, 1, 1],
     ],
     ' ': [
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
     ],
 }
 
@@ -156,81 +167,89 @@ class LEDMatrix:
         """Update the display"""
         self.pixels.show()
     
-    def render_static_rainbow_text(self, text):
+    def render_text_at_position(self, text, x_offset, color=BLUE_COLOR):
         """
-        Render centered static text using rainbow colors.
+        Render text at a specific x position in blue color.
         
         Args:
             text: Text to render
+            x_offset: X position offset for scrolling
+            color: RGB color tuple (default: blue)
         """
         self.clear()
         
         text = text.upper()
-        text_width = len(text) * 6 - 1
-        x_offset = max(0, (self.width - text_width) // 2)
-        y_offset = max(0, (self.height - 5) // 2)
-        
         current_x = x_offset
         
-        for char_index, char in enumerate(text):
-            if char in FONT:
-                letter = FONT[char]
+        for char in text:
+            if char in FONT_8x6:
+                letter = FONT_8x6[char]
                 
                 for row_idx, row in enumerate(letter):
                     for col_idx, pixel in enumerate(row):
                         x_pos = current_x + col_idx
-                        y_pos = y_offset + row_idx
+                        y_pos = row_idx
                         
                         if pixel == 1 and 0 <= x_pos < self.width and 0 <= y_pos < self.height:
-                            color = RAINBOW_COLORS[(char_index + col_idx + row_idx) % len(RAINBOW_COLORS)]
                             self.set_pixel(x_pos, y_pos, color)
                 
-                current_x += 6
+                current_x += 7  # 6 pixels wide + 1 pixel spacing
         
         self.show()
 
 
-def display_static_text(matrix, text, hold_time=None):
+def scroll_text(matrix, text, scroll_speed=DEFAULT_SCROLL_SPEED, loops=None, color=BLUE_COLOR):
     """
-    Display static text without scrolling.
+    Scroll text across the display in blue color.
     
     Args:
         matrix: LEDMatrix instance
-        text: Text to display
-        hold_time: Optional display duration in seconds (None = until Ctrl+C)
+        text: Text to scroll
+        scroll_speed: Delay between scroll steps in seconds
+        loops: Number of times to loop (None = infinite)
+        color: RGB color tuple (default: blue)
     """
+    text = text.upper()
+    text_width = len(text) * 7  # Each char is 6 pixels + 1 spacing
+    
+    loop_count = 0
     try:
-        matrix.render_static_rainbow_text(text)
-        
-        if hold_time is None:
-            while True:
-                time.sleep(1)
-        else:
-            time.sleep(hold_time)
+        while True:
+            # Scroll from right edge to completely off left edge
+            for x_offset in range(matrix.width, -text_width - 1, -1):
+                matrix.render_text_at_position(text, x_offset, color)
+                time.sleep(scroll_speed)
+            
+            loop_count += 1
+            if loops is not None and loop_count >= loops:
+                break
     
     except KeyboardInterrupt:
-        print("\n⚠ Display interrupted by user")
+        print("\n⚠ Scrolling interrupted by user")
         matrix.clear()
 
 
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Display "THINK" statically in rainbow colors on 8x32 LED matrix',
+        description='Scroll text in BLUE across 8x32 LED matrix with 8-pixel high letters',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scroll_think.py                    # Display continuously
-  python scroll_think.py -d 10              # Show for 10 seconds
+  python scroll_think.py                    # Scroll "THINK" continuously
+  python scroll_think.py -l 3               # Scroll 3 times then stop
+  python scroll_think.py -s 0.1             # Faster scrolling
+  python scroll_think.py -t "HELLO"         # Scroll different text
   python scroll_think.py -b 0.5             # Brighter display
-  python scroll_think.py -t "THINK"         # Display different text
         """
     )
     
     parser.add_argument('-b', '--brightness', type=float, default=DEFAULT_BRIGHTNESS,
                         help=f'Brightness level 0.0-1.0 (default: {DEFAULT_BRIGHTNESS})')
-    parser.add_argument('-d', '--duration', type=float, default=None,
-                        help='Display duration in seconds (default: infinite until Ctrl+C)')
+    parser.add_argument('-s', '--speed', type=float, default=DEFAULT_SCROLL_SPEED,
+                        help=f'Scroll speed in seconds per step (default: {DEFAULT_SCROLL_SPEED})')
+    parser.add_argument('-l', '--loops', type=int, default=None,
+                        help='Number of times to loop (default: infinite until Ctrl+C)')
     parser.add_argument('-t', '--text', type=str, default='THINK',
                         help='Text to scroll (default: THINK)')
     parser.add_argument('--width', type=int, default=MATRIX_WIDTH,
@@ -246,7 +265,7 @@ Examples:
         sys.exit(1)
     
     # Validate text contains only supported characters
-    supported_chars = set(FONT.keys())
+    supported_chars = set(FONT_8x6.keys())
     text_chars = set(args.text.upper())
     unsupported = text_chars - supported_chars
     if unsupported:
@@ -260,14 +279,15 @@ Examples:
     )
     
     print(f"\n{'='*50}")
-    print(f"Displaying '{args.text}' statically in rainbow colors")
-    print(f"Duration: {args.duration or 'infinite'}")
+    print(f"Scrolling '{args.text}' in BLUE")
+    print(f"Speed: {args.speed}s per step")
+    print(f"Loops: {args.loops or 'infinite'}")
     print(f"{'='*50}\n")
     print("Press Ctrl+C to stop\n")
     
     try:
-        display_static_text(matrix, args.text, args.duration)
-        print("\n✓ Display complete")
+        scroll_text(matrix, args.text, args.speed, args.loops, BLUE_COLOR)
+        print("\n✓ Scrolling complete")
     finally:
         matrix.clear()
         print("✓ Display cleared")
