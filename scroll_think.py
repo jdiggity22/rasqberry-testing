@@ -14,7 +14,7 @@ import sys
 MATRIX_WIDTH = 32
 MATRIX_HEIGHT = 8
 TOTAL_LEDS = MATRIX_WIDTH * MATRIX_HEIGHT  # 256 LEDs
-DEFAULT_LED_PIN = board.D18
+DEFAULT_LED_PIN = board.D10  # GPIO 10 (SPI MOSI) - required for NeoPixel on Pi 5
 DEFAULT_BRIGHTNESS = 0.3
 DEFAULT_SCROLL_SPEED = 0.05  # Seconds between scroll steps
 BLACK_COLOR = (0, 0, 0)

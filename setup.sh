@@ -42,7 +42,8 @@ sudo apt-get install -y \
     python3-dev \
     python3-venv \
     git \
-    build-essential
+    build-essential \
+    swig
 
 echo "✓ System dependencies installed"
 echo ""

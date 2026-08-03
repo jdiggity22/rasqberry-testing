@@ -18,7 +18,7 @@ LED_COUNT = 8
 # - board.D10 (GPIO 10, SPI MOSI) - For SPI mode
 # - board.D12 (GPIO 12, PWM0)
 # - board.D21 (GPIO 21, PWM1)
-LED_PIN = board.D18
+LED_PIN = board.D10  # GPIO 10 (SPI MOSI) - required for NeoPixel on Pi 5
 
 # LED brightness (0.0 to 1.0)
 # Start with lower values to avoid excessive power draw
