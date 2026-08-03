@@ -16,7 +16,7 @@ from datetime import datetime
 
 # Configuration
 DEFAULT_LED_COUNT = 8
-DEFAULT_LED_PIN = board.D18
+DEFAULT_LED_PIN = board.D10  # GPIO 10 (SPI MOSI)
 DEFAULT_BRIGHTNESS = 0.5
 DEFAULT_PIXEL_ORDER = neopixel.GRB
 MINNEAPOLIS_LAT = 44.9778

@@ -14,7 +14,7 @@ import sys
 MATRIX_WIDTH = 32
 MATRIX_HEIGHT = 8
 TOTAL_LEDS = MATRIX_WIDTH * MATRIX_HEIGHT  # 256 LEDs
-DEFAULT_LED_PIN = board.D10  # GPIO 10 (SPI MOSI) - required for NeoPixel on Pi 5
+DEFAULT_LED_PIN = board.D10  # GPIO 10 (SPI MOSI)
 DEFAULT_BRIGHTNESS = 0.3
 DEFAULT_SCROLL_SPEED = 0.05  # Seconds between scroll steps
 BLACK_COLOR = (0, 0, 0)
@@ -121,28 +121,28 @@ class LEDMatrix:
     def xy_to_index(self, x, y):
         """
         Convert x,y coordinates to LED strip index
-        Assumes column-major zigzag wiring pattern (typical for pre-made matrix panels)
-        - Even columns (0, 2, 4...): Data flows DOWN (top to bottom)
-        - Odd columns (1, 3, 5...): Data flows UP (bottom to top)
-        
+        Assumes row-major zigzag wiring pattern (standard for 8x32 WS2812B panels)
+        - Even rows (0, 2, 4...): Data flows LEFT to RIGHT
+        - Odd rows  (1, 3, 5...): Data flows RIGHT to LEFT
+
         Args:
             x: X coordinate (0 to width-1)
             y: Y coordinate (0 to height-1)
-            
+
         Returns:
             LED index in the strip
         """
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return None
-        
-        # Column-major zigzag pattern
-        if x % 2 == 0:
-            # Even columns: top to bottom
-            index = x * self.height + y
+
+        # Row-major zigzag pattern
+        if y % 2 == 0:
+            # Even rows: left to right
+            index = y * self.width + x
         else:
-            # Odd columns: bottom to top
-            index = x * self.height + (self.height - 1 - y)
-        
+            # Odd rows: right to left
+            index = y * self.width + (self.width - 1 - x)
+
         return index
     
     def set_pixel(self, x, y, color):

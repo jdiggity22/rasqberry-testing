@@ -18,7 +18,7 @@ LED_COUNT = 8
 # - board.D10 (GPIO 10, SPI MOSI) - For SPI mode
 # - board.D12 (GPIO 12, PWM0)
 # - board.D21 (GPIO 21, PWM1)
-LED_PIN = board.D10  # GPIO 10 (SPI MOSI) - required for NeoPixel on Pi 5
+LED_PIN = board.D10  # GPIO 10 (SPI MOSI)
 
 # LED brightness (0.0 to 1.0)
 # Start with lower values to avoid excessive power draw
@@ -79,7 +79,7 @@ TEST_COLORS = {
 
 """
 Raspberry Pi 5 WS2812B Connection:
-- LED Data Pin -> GPIO 18 (Pin 12)
+- LED Data Pin -> GPIO 10 / SPI MOSI (Pin 19)
 - LED 5V -> External 5V power supply positive
 - LED GND -> Raspberry Pi GND + Power supply GND (common ground)
 
@@ -101,7 +101,7 @@ Power Calculation:
 # ============================================================================
 
 # SPI Configuration (if using SPI mode instead of PWM)
-USE_SPI = False
+USE_SPI = True
 SPI_BUS = None  # Will use default SPI bus if None
 
 # Frequency for PWM (Hz) - typically 800000 for WS2812B

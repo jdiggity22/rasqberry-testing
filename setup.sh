@@ -43,7 +43,8 @@ sudo apt-get install -y \
     python3-venv \
     git \
     build-essential \
-    swig
+    swig \
+    liblgpio-dev
 
 echo "✓ System dependencies installed"
 echo ""
