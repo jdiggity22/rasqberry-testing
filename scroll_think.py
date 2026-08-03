@@ -121,13 +121,13 @@ class LEDMatrix:
     def xy_to_index(self, x, y):
         """
         Convert x,y coordinates to LED strip index
-        Assumes row-major zigzag wiring pattern (standard for 8x32 WS2812B panels)
-        - Even rows (0, 2, 4...): Data flows LEFT to RIGHT
-        - Odd rows  (1, 3, 5...): Data flows RIGHT to LEFT
+        Column-major zigzag wiring pattern (confirmed by hardware test)
+        - Even columns (0, 2, 4...): Data flows TOP to BOTTOM
+        - Odd columns  (1, 3, 5...): Data flows BOTTOM to TOP
 
         Args:
-            x: X coordinate (0 to width-1)
-            y: Y coordinate (0 to height-1)
+            x: X coordinate (0 to width-1, left to right)
+            y: Y coordinate (0 to height-1, top to bottom)
 
         Returns:
             LED index in the strip
@@ -135,13 +135,13 @@ class LEDMatrix:
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return None
 
-        # Row-major zigzag pattern
-        if y % 2 == 0:
-            # Even rows: left to right
-            index = y * self.width + x
+        # Column-major zigzag pattern
+        if x % 2 == 0:
+            # Even columns: top to bottom
+            index = x * self.height + y
         else:
-            # Odd rows: right to left
-            index = y * self.width + (self.width - 1 - x)
+            # Odd columns: bottom to top
+            index = x * self.height + (self.height - 1 - y)
 
         return index
     
