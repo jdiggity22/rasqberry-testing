@@ -162,6 +162,10 @@ class LEDMatrix:
         """Clear all pixels"""
         self.pixels.fill(BLACK_COLOR)
         self.pixels.show()
+
+    def clear_buffer(self):
+        """Clear pixel buffer without pushing to display"""
+        self.pixels.fill(BLACK_COLOR)
     
     def show(self):
         """Update the display"""
@@ -176,8 +180,8 @@ class LEDMatrix:
             x_offset: X position offset for scrolling
             color: RGB color tuple (default: blue)
         """
-        self.clear()
-        
+        self.clear_buffer()
+
         text = text.upper()
         current_x = x_offset
         
@@ -258,6 +262,8 @@ Examples:
                         help=f'Matrix height (default: {MATRIX_HEIGHT})')
     parser.add_argument('--test-fill', action='store_true',
                         help='Fill all LEDs solid blue for 5 seconds (wiring/pin diagnostic)')
+    parser.add_argument('--static', action='store_true',
+                        help='Render text statically at position 0 for 5 seconds (font/mapping diagnostic)')
 
     args = parser.parse_args()
 
@@ -284,6 +290,14 @@ Examples:
             time.sleep(0.5)
         matrix.clear()
         print("✓ Done — note which direction the first 8 LEDs ran (left→right, top→bottom, etc.)")
+        return
+
+    if args.static:
+        print(f"→ Rendering '{args.text}' statically at position 0 for 5 seconds...")
+        matrix.render_text_at_position(args.text, 0, BLUE_COLOR)
+        time.sleep(5)
+        matrix.clear()
+        print("✓ Done")
         return
 
     # Validate text contains only supported characters
