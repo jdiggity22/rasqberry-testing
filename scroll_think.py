@@ -275,12 +275,15 @@ Examples:
 
     # Diagnostic: fill all LEDs solid blue then exit
     if args.test_fill:
-        print("→ Filling all 256 LEDs solid blue for 5 seconds...")
-        matrix.pixels.fill(BLUE_COLOR)
-        matrix.pixels.show()
-        time.sleep(5)
+        print("→ Lighting LEDs 0-7 one at a time (0.5s each) — watch which physical LEDs light up")
+        for i in range(8):
+            matrix.pixels.fill(BLACK_COLOR)
+            matrix.pixels[i] = BLUE_COLOR
+            matrix.pixels.show()
+            print(f"  LED index {i}")
+            time.sleep(0.5)
         matrix.clear()
-        print("✓ Done — if nothing lit up, check wiring and SPI is enabled")
+        print("✓ Done — note which direction the first 8 LEDs ran (left→right, top→bottom, etc.)")
         return
 
     # Validate text contains only supported characters
