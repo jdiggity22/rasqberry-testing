@@ -256,35 +256,47 @@ Examples:
                         help=f'Matrix width (default: {MATRIX_WIDTH})')
     parser.add_argument('--height', type=int, default=MATRIX_HEIGHT,
                         help=f'Matrix height (default: {MATRIX_HEIGHT})')
-    
+    parser.add_argument('--test-fill', action='store_true',
+                        help='Fill all LEDs solid blue for 5 seconds (wiring/pin diagnostic)')
+
     args = parser.parse_args()
-    
+
     # Validate brightness
     if not 0.0 <= args.brightness <= 1.0:
         print("Error: Brightness must be between 0.0 and 1.0")
         sys.exit(1)
-    
-    # Validate text contains only supported characters
-    supported_chars = set(FONT_8x6.keys())
-    text_chars = set(args.text.upper())
-    unsupported = text_chars - supported_chars
-    if unsupported:
-        print(f"Warning: Unsupported characters will be skipped: {unsupported}")
-    
+
     # Initialize matrix
     matrix = LEDMatrix(
         width=args.width,
         height=args.height,
         brightness=args.brightness
     )
-    
+
+    # Diagnostic: fill all LEDs solid blue then exit
+    if args.test_fill:
+        print("→ Filling all 256 LEDs solid blue for 5 seconds...")
+        matrix.pixels.fill(BLUE_COLOR)
+        matrix.pixels.show()
+        time.sleep(5)
+        matrix.clear()
+        print("✓ Done — if nothing lit up, check wiring and SPI is enabled")
+        return
+
+    # Validate text contains only supported characters
+    supported_chars = set(FONT_8x6.keys())
+    text_chars = set(args.text.upper())
+    unsupported = text_chars - supported_chars
+    if unsupported:
+        print(f"Warning: Unsupported characters will be skipped: {unsupported}")
+
     print(f"\n{'='*50}")
     print(f"Scrolling '{args.text}' in BLUE")
     print(f"Speed: {args.speed}s per step")
     print(f"Loops: {args.loops or 'infinite'}")
     print(f"{'='*50}\n")
     print("Press Ctrl+C to stop\n")
-    
+
     try:
         scroll_text(matrix, args.text, args.speed, args.loops, BLUE_COLOR)
         print("\n✓ Scrolling complete")
